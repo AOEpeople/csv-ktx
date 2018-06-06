@@ -13,4 +13,7 @@ repositories {
 
 dependencies {
     compile "org.apache.commons:commons-csv:1.5"
+
+    testCompile 'junit:junit:4.12'
+    testCompile 'com.google.truth:truth:0.39'
 }
