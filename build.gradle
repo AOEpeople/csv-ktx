@@ -1,6 +1,7 @@
 plugins {
     id 'nebula.kotlin' version '1.2.41'
     id "io.gitlab.arturbosch.detekt" version "1.0.0.RC7"
+    id "org.jlleitschuh.gradle.ktlint" version "4.0.0"
 }
 
 version = version ?: "development"
