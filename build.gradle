@@ -1,14 +1,16 @@
 plugins {
     id 'nebula.kotlin' version '1.2.41'
+    id "io.gitlab.arturbosch.detekt" version "1.0.0.RC7"
+    id "org.jlleitschuh.gradle.ktlint" version "4.0.0"
+    id "com.bmuschko.nexus" version "2.3.1"
 }
 
-version = version ?: "development"
-
 group = "com.aoe"
-version = "1.0.0-SNAPSHOT"
+version = "0.1"
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 dependencies {
@@ -16,4 +18,32 @@ dependencies {
 
     testCompile 'junit:junit:4.12'
     testCompile 'com.google.truth:truth:0.39'
+}
+
+modifyPom {
+    project {
+        name 'CVS Ktx'
+        description 'A set of Kotlin extension for Apache Commons CSV'
+        url 'https://github.com/AOEpeople/csv-ktx'
+        inceptionYear '2018'
+
+        scm {
+            url 'https://github.com/AOEpeople/csv-ktx'
+            connection 'scm:git:git://github.com/AOEpeople/csv-ktx.git'
+        }
+
+        licenses {
+            license {
+                name 'The Apache Software License, Version 2.0'
+                url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                distribution 'repo'
+            }
+        }
+
+        developers {
+            developer {
+                name 'AOE GmbH'
+            }
+        }
+    }
 }
