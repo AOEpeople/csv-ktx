@@ -9,7 +9,7 @@ Getting Started
 Add the following to your `build.gradle`
 
 ```groovy
-compile 'com.aoe:csv-ktx:0.1'
+compile 'com.aoe:csv-ktx:0.2'
 ```
 
 and you are ready to go

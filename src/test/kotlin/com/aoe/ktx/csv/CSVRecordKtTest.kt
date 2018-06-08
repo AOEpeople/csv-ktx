@@ -76,11 +76,119 @@ foo,somewhere,01.01.2010""".trimMargin()
     }
 
     @Test
-    fun `field is not mapped`() {
+    fun `field is not mapped so there is no empty value`() {
         val csv = """theName,theAddress,theBirthday
 rocky,,2.2.2012
 foo,somewhere,01.01.2010""".trimMargin()
         val record = CSVParser.parse(csv, CSVFormat.DEFAULT.withFirstRecordAsHeader()).records[0]
         assertThat(record.anyNotEmptyValue("theOtherAddress")).isFalse()
+    }
+
+    @Test
+    fun `column name is not given and fields are empty`() {
+        val csv = """theName,theAddress,theBirthday
+,,
+foo,somewhere,01.01.2010""".trimMargin()
+        val record = CSVParser.parse(csv, CSVFormat.DEFAULT.withFirstRecordAsHeader()).records[0]
+        assertThat(record.anyNotEmptyValue()).isFalse()
+    }
+
+    @Test
+    fun `column name is not given and at least one field is not empty`() {
+        val csv = """theName,theAddress,theBirthday
+,,2.2.2012
+foo,somewhere,01.01.2010""".trimMargin()
+        val record = CSVParser.parse(csv, CSVFormat.DEFAULT.withFirstRecordAsHeader()).records[0]
+        assertThat(record.anyNotEmptyValue()).isTrue()
+    }
+
+    @Test
+    fun `column name is not given and all fields are not empty`() {
+        val csv = """theName,theAddress,theBirthday
+,,2.2.2012
+foo,somewhere,01.01.2010""".trimMargin()
+        val record = CSVParser.parse(csv, CSVFormat.DEFAULT.withFirstRecordAsHeader()).records[1]
+        assertThat(record.anyNotEmptyValue()).isTrue()
+    }
+
+    @Test
+    fun `field is not mapped, expected value can't be found`() {
+        val csv = """theName,theAddress,theBirthday
+rocky,,2.2.2012
+foo,somewhere,01.01.2010""".trimMargin()
+        val record = CSVParser.parse(csv, CSVFormat.DEFAULT.withFirstRecordAsHeader()).records[0]
+        assertThat(record.anyValue("rocky", "theOtherAddress")).isFalse()
+    }
+
+    @Test
+    fun `column name is not given, expected value found`() {
+        val csv = """theName,theAddress,theBirthday
+rocky,,2.2.2012
+foo,somewhere,01.01.2010""".trimMargin()
+        val record = CSVParser.parse(csv, CSVFormat.DEFAULT.withFirstRecordAsHeader()).records[0]
+        assertThat(record.anyValue("rocky")).isTrue()
+    }
+
+    @Test
+    fun `column name is not given, expected value not found`() {
+        val csv = """theName,theAddress,theBirthday
+rocky,,2.2.2012
+foo,somewhere,01.01.2010""".trimMargin()
+        val record = CSVParser.parse(csv, CSVFormat.DEFAULT.withFirstRecordAsHeader()).records[0]
+        assertThat(record.anyValue("balboa")).isFalse()
+    }
+
+    @Test
+    fun `column name is not given, expected value is found`() {
+        val csv = """theName,theAddress,theBirthday
+rocky,,2.2.2012
+foo,somewhere,01.01.2010""".trimMargin()
+        val record = CSVParser.parse(csv, CSVFormat.DEFAULT.withFirstRecordAsHeader()).records[1]
+        assertThat(record.anyValue("somewhere")).isTrue()
+    }
+
+    @Test
+    fun `field is mapped, expected value can't be found`() {
+        val csv = """theName,theAddress,theBirthday
+rocky,,2.2.2012
+foo,somewhere,01.01.2010""".trimMargin()
+        val record = CSVParser.parse(csv, CSVFormat.DEFAULT.withFirstRecordAsHeader()).records[0]
+        assertThat(record.anyValue("balboa", "theName")).isFalse()
+    }
+
+    @Test
+    fun `field is mapped, expected value can be found`() {
+        val csv = """theName,theAddress,theBirthday
+rocky,,2.2.2012
+foo,somewhere,01.01.2010""".trimMargin()
+        val record = CSVParser.parse(csv, CSVFormat.DEFAULT.withFirstRecordAsHeader()).records[0]
+        assertThat(record.anyValue("rocky", "theName")).isTrue()
+    }
+
+    @Test
+    fun `field is mapped, expected values can't be found`() {
+        val csv = """theName,theAddress,theBirthday
+rocky,,2.2.2012
+foo,somewhere,01.01.2010""".trimMargin()
+        val record = CSVParser.parse(csv, CSVFormat.DEFAULT.withFirstRecordAsHeader()).records[0]
+        assertThat(record.valueContains("theName", "balboa", "rambo")).isFalse()
+    }
+
+    @Test
+    fun `field is mapped, expected at least one value can be found`() {
+        val csv = """theName,theAddress,theBirthday
+rocky,,2.2.2012
+foo,somewhere,01.01.2010""".trimMargin()
+        val record = CSVParser.parse(csv, CSVFormat.DEFAULT.withFirstRecordAsHeader()).records[0]
+        assertThat(record.valueContains("theName", "balboa", "rocky", "rambo")).isTrue()
+    }
+
+    @Test
+    fun `field is not mapped, expected values can't be found`() {
+        val csv = """theName,theAddress,theBirthday
+rocky,,2.2.2012
+foo,somewhere,01.01.2010""".trimMargin()
+        val record = CSVParser.parse(csv, CSVFormat.DEFAULT.withFirstRecordAsHeader()).records[0]
+        assertThat(record.valueContains("theOtherName", "balboa", "rambo")).isFalse()
     }
 }
